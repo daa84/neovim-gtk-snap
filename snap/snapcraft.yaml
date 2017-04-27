@@ -12,8 +12,8 @@ confinement: devmode # use 'strict' once you have the right plugs and slots
 
 apps:
   neovim-gtk:
-    command: bin/nvim-gtk
-    plugs: [home, x11, unity7, gsettings]
+    command: desktop-launch nvim-gtk
+    plugs: [home, x11, unity7, gsettings pulseaudio]
 
 parts:
   neovim-gtk:

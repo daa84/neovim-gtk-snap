@@ -12,10 +12,17 @@ confinement: devmode # use 'strict' once you have the right plugs and slots
 
 apps:
   neovim-gtk:
-    command: desktop-launch nvim-gtk
-    plugs: [home, x11, unity7, gsettings pulseaudio]
+    command: desktop-launch nvim-gtk --nvim-bin-path=$SNAP/usr/local/bin/nvim
+    plugs: [home, x11, unity7, gsettings, pulseaudio]
 
 parts:
+  neovim:
+    source: git://github.com/neovim/neovim
+    source-tag: v0.1.7
+    plugin: make
+    make-parameters: [CMAKE_BUILD_TYPE=Release]
+    build-packages: [libtool, libtool-bin, autoconf, automake, cmake]
+    
   neovim-gtk:
     plugin: rust
     source: https://github.com/daa84/neovim-gtk.git

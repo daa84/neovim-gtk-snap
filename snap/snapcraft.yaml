@@ -1,22 +1,41 @@
-name: neovim-gtk
+name: nvim-gtk
 version: '0.1.1'
 summary: GUI client for NeoVIM
 description: |
-  This is my-snap's description. You have a paragraph or two to tell the
-  most important story about your snap. Keep it under 100 words though,
-  we live in tweetspace and your description wants to look good in the snap
-  store.
+  GTK ui for neovim written in rust using gtk-rs bindings.
 
 grade: devel # must be 'stable' to release into candidate/stable channels
-confinement: devmode # use 'strict' once you have the right plugs and slots
+confinement: strict
+
+icon: nvim-gtk.png
+
+
+plugs:
+  dbus:
+    bus: session
+    interface: dbus
+    name: org.daa.NeovimGtk
+
+slots:
+  session-dbus-interface:
+    bus: session
+    interface: dbus
+    name: org.daa.NeovimGtk
 
 apps:
-  neovim-gtk:
-    command: desktop-launch nvim-gtk --nvim-bin-path=/snap/bin/neovim-gtk.neovim
-    plugs: [home, x11, unity7, gsettings, pulseaudio, network-bind]
+  nvim-gtk:
+    command: desktop-launch nvim-gtk --nvim-bin-path=neovim.wrapper
+    plugs: 
+        - home
+        - x11
+        - unity7
+        - gsettings
+        - pulseaudio
+        - network
+    desktop: usr/share/applications/nvim-gtk.desktop
   neovim:
     command: desktop-launch neovim.wrapper
-    plugs: [home, network-bind]
+    plugs: [home, network]
 
 parts:
   neovim:
@@ -24,16 +43,22 @@ parts:
     source-tag: v0.1.7
     plugin: make
     make-parameters: [CMAKE_BUILD_TYPE=Release, CMAKE_EXTRA_FLAGS="-DCMAKE_INSTALL_PREFIX=/"]
+    stage-packages: [xsel]
     build-packages: [libtool, libtool-bin, autoconf, automake, cmake]
     
-  neovim-gtk:
+  nvim-gtk:
     plugin: rust
     source: https://github.com/daa84/neovim-gtk.git
+    stage-packages: [libmirclient9]
     build-packages: [libgtk-3-dev]
     after: [desktop-gtk3]
+    install: |
+      make PREFIX=$SNAPCRAFT_PART_INSTALL/usr install-resources
+      sed -i 's|Icon=nvim-gtk|Icon=${SNAP}/usr/share/icons/hicolor/128x128/apps/nvim-gtk.png|g' $SNAPCRAFT_PART_INSTALL/usr/share/applications/nvim-gtk.desktop
 
   env:
     source: .
     plugin: dump
     organize:
         neovim.wrapper: usr/bin/neovim.wrapper
+

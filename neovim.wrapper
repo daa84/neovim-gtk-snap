@@ -1,0 +1,6 @@
+#!/bin/sh
+export VIMRUNTIME="$SNAP/usr/share/nvim/runtime/"
+export XDG_CONFIG_HOME=$SNAP_USER_COMMON/config
+
+exec "$SNAP/usr/bin/nvim" "$@"
+

@@ -4,7 +4,7 @@ summary: GUI client for NeoVIM
 description: |
   GTK ui for neovim written in rust using gtk-rs bindings.
 
-grade: devel # must be 'stable' to release into candidate/stable channels
+grade: stable
 confinement: strict
 
 icon: nvim-gtk.png
@@ -32,10 +32,11 @@ apps:
         - gsettings
         - pulseaudio
         - network
+        - network-bind
     desktop: usr/share/applications/nvim-gtk.desktop
   neovim:
     command: desktop-launch neovim.wrapper
-    plugs: [home, network]
+    plugs: [home, network, network-bind]
 
 parts:
   neovim:
